@@ -212,9 +212,6 @@ a.product-card {
     /* Bóng mặc định nhẹ */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     
-    /* Chặn hiệu ứng chạm giữ trên điện thoại */
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
 }
