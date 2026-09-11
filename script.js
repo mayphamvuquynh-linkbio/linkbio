@@ -41,9 +41,10 @@ function renderProducts() {
         const isReverse = index % 2 !== 0;
         const cardClass = isReverse ? 'product-card reverse' : 'product-card';
 
-        // Tối ưu hóa thẻ a: Đã lược bỏ các sự kiện rườm rà, nhường trọn vẹn cho CSS xử lý mượt mà
+        // Biến trực tiếp khung sản phẩm thành thẻ a để bấm mượt mà
+    // Thêm hiệu ứng active: khi nhấn vào (touchstart / mousedown) sẽ bị thu nhỏ nhẹ (scale 0.97)
         html += `
-            <a href="${item.link}" target="_blank" id="card-${item.id}" class="${cardClass}" data-id="${item.id}" style="text-decoration: none; -webkit-tap-highlight-color: transparent;">
+            <a href="${item.link}" target="_blank" id="card-${item.id}" class="${cardClass}" data-id="${item.id}" style="text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform 0.1s ease;" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
                 <!-- Nửa ảnh (50%) -->
                 <div class="card-image">
                     <img src="${item.image}" alt="Mã ${item.id}">
@@ -129,21 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById('searchCodeInput');
     if (input) {
-        // Bắt sự kiện nhấn phím Enter chuẩn hiện đại bằng keydown
-        input.addEventListener('keydown', (e) => {
+        // Bắt sự kiện nhấn phím Enter trên điện thoại/máy tính
+        input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 searchAndScroll();
             }
         });
-
-        // Tự động khôi phục trạng thái ban đầu nếu người dùng bấm dấu X xóa sạch chữ trong ô input
-        input.addEventListener('input', (e) => {
-            if (e.target.value.trim() === "") {
-                resetSearchState();
-            }
-        });
     }
+
+    // Nếu bạn có dùng nút bấm (button) tìm kiếm riêng trên giao diện, 
+    // hãy đảm bảo nút đó gọi hàm `searchAndScroll()` khi click (ví dụ: onclick="searchAndScroll()")
 
     // Lắng nghe sự kiện người dùng tự cuộn trang
     window.addEventListener('scroll', () => {
