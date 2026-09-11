@@ -63,7 +63,7 @@ function renderProducts() {
     listContainer.innerHTML = html;
 }
 
-// --- 3. HÀM TÌM KIẾM VÀ CUỘN (KHI BẤM ENTER) ---
+// --- 3. HÀM TÌM KIẾM VÀ CUỘN (KHI BẤM ENTER HOẶC NÚT TÌM) ---
 function searchAndScroll() {
     const input = document.getElementById('searchCodeInput');
     if (!input) return;
@@ -84,10 +84,13 @@ function searchAndScroll() {
     });
 
     if (targetCard) {
-        // Bật cờ khóa sự kiện cuộn để trình duyệt không hiểu lầm là người dùng đang cuộn tay
+        // 1. Tự động ẩn bàn phím điện thoại (bằng cách bỏ focus khỏi ô input)
+        input.blur();
+
+        // 2. Bật cờ khóa sự kiện cuộn
         isAutoScrolling = true;
 
-        // Làm nổi bật sản phẩm tìm thấy và làm mờ các ô khác
+        // 3. Làm nổi bật sản phẩm tìm thấy và làm mờ các ô khác
         targetCard.classList.add('product-highlight');
         allCards.forEach(card => {
             if (card !== targetCard) {
@@ -95,10 +98,10 @@ function searchAndScroll() {
             }
         });
 
-        // Tự động cuộn mượt mà đến ô sản phẩm đó
+        // 4. Tự động cuộn mượt mà đến ô sản phẩm đó
         targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // Sau khi cuộn xong (khoảng 800ms), mở khóa lại cờ cuộn để cho phép người dùng cuộn tay
+        // Mở khóa lại cờ cuộn sau khi hoàn tất hiệu ứng cuộn
         setTimeout(() => {
             isAutoScrolling = false;
         }, 800);
@@ -114,7 +117,6 @@ function resetSearchState() {
         input.value = ""; // Xóa trắng ô tìm kiếm
     }
     
-    // Gỡ bỏ toàn bộ hiệu ứng highlight / dimmed trên các thẻ sản phẩm
     const allCards = document.querySelectorAll('.product-card');
     allCards.forEach(card => {
         card.classList.remove('product-highlight', 'product-dimmed');
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById('searchCodeInput');
     if (input) {
-        // Bắt sự kiện nhấn phím Enter để thực hiện tìm và cuộn
+        // Bắt sự kiện nhấn phím Enter trên điện thoại/máy tính
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -136,13 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Lắng nghe sự kiện người dùng thực sự cuộn trang tay
+    // Nếu bạn có dùng nút bấm (button) tìm kiếm riêng trên giao diện, 
+    // hãy đảm bảo nút đó gọi hàm `searchAndScroll()` khi click (ví dụ: onclick="searchAndScroll()")
+
+    // Lắng nghe sự kiện người dùng tự cuộn trang
     window.addEventListener('scroll', () => {
-        // Chỉ reset khi KHÔNG phải do code tự động cuộn, 
-        // VÀ ô tìm kiếm đang có nội dung (tức là đang ở trạng thái tìm kiếm)
         const input = document.getElementById('searchCodeInput');
         if (!isAutoScrolling && input && input.value.trim() !== "") {
-            // Khi người dùng cuộn trang đi xem sản phẩm khác -> Tự động reset
             resetSearchState();
         }
     });
