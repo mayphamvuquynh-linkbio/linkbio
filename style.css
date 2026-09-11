@@ -159,9 +159,9 @@ body::after {
 }
 #searchCodeInput {
     width: 100%;
-    max-width: 350px;
-    padding: 10px 14px;
-    border: 3px solid #784212;
+    max-width: 320px;
+    padding: 6px 10px;
+    border: 2px solid #784212;
     border-radius: 25px;
     outline: none;
     box-sizing: border-box;
