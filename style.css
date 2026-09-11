@@ -1,4 +1,4 @@
-/* --- Áp dụng cho TOÀN BỘ trang web --- */
+/* --- Áp dụng cho TOÀN BỘ trang web (Chặn bôi đen, chặn menu giữ ảnh trên điện thoại) --- */
 body, html {
     -webkit-user-select: none;     /* Chặn bôi đen trên Safari, iOS */
     -moz-user-select: none;        /* Chặn bôi đen trên Firefox */
@@ -7,7 +7,7 @@ body, html {
     -webkit-touch-callout: none;   /* Chặn hiện menu bật lên (lưu ảnh, copy...) khi giữ tay lâu trên điện thoại */
 }
 
-/* Cho phép người dùng nhập liệu bình thường ở các ô tìm kiếm hoặc ô nhập văn bản (nếu có) */
+/* Cho phép người dùng nhập liệu bình thường ở các ô tìm kiếm hoặc ô nhập văn bản */
 input, textarea {
     -webkit-user-select: text;
     user-select: text;
@@ -111,7 +111,7 @@ body::after {
     font-family: Playfair Display;
 }
 .profile-info p {
-    font-size: 16px;
+    font-size: 20px;
     color: #ffffff;
     margin: 0;
     font-family: Arima Madurai;
@@ -138,8 +138,7 @@ body::after {
     transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-/* Dùng :active thay vì :hover để khi bấm xong nhả tay ra là tự động tắt màu ngay lập tức trên điện thoại */
-.social-icons a:active, a:hover {
+.social-icons a:active, .social-icons a:hover {
     background-color: #784212;
     color: #fff;
     transform: scale(0.95);
@@ -152,9 +151,9 @@ body::after {
     margin-bottom: 25px;
 }
 .search-label {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    color: #fffc;
+    color: #ffff;
     margin-bottom: 10px;
     font-family: Arima Madurai;
 }
@@ -162,25 +161,21 @@ body::after {
     width: 100%;
     max-width: 350px;
     padding: 10px 14px;
-    
-    /* ĐẶT CỠ CHỮ TỪ 16PX TRỞ LÊN ĐỂ CHẶN ĐỨNG LỖI ZOOM TRÊN TRÌNH DUYỆT ĐIỆN THOẠI */
-    font-size: 16px; 
-    
     border: 3px solid #784212;
     border-radius: 25px;
     outline: none;
     box-sizing: border-box;
     transition: all 0.3s ease;
     background-color: #fff;
-    
-    /* Khóa cố định các hiệu ứng dịch chuyển khung */
+    font-family: Arima Madurai;
+    font-size: 16px;
     transform: none !important;
 }
 #searchCodeInput:focus {
-    /* Khi bấm vào chỉ tạo hiệu ứng bóng sáng nhẹ, tuyệt đối không làm to khung hay dịch chuyển */
     box-shadow: 0 0 8px rgba(120, 66, 18, 0.4);
     transform: none !important;
 }
+
 /* 6. Khu vực danh sách sản phẩm */
 .product-list {
     display: flex;
@@ -192,7 +187,7 @@ body::after {
     box-sizing: border-box;
 }
 
-/* Ép mọi thẻ sản phẩm (kể cả thẻ a do JS sinh ra) giữ nền trắng và chống hiệu ứng ám màu */
+/* Khung sản phẩm chuẩn: Cố định tâm, hiệu ứng co giãn mềm mại tại chỗ không dịch chuyển top */
 .product-card, 
 a.product-card {
     width: 100%;
@@ -206,10 +201,17 @@ a.product-card {
     background-color: #fff !important;
     display: flex;
     text-decoration: none;
-    transition: all 0.4s ease !important;
+    
+    /* Cố định tâm ở chính giữa để phóng to/thu nhỏ tại chỗ */
+    transform-origin: center center;
+    
+    /* Chuyển động mượt mà, uyển chuyển */
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease, opacity 0.4s ease, filter 0.4s ease !important;
     opacity: 1;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    -webkit-tap-highlight-color: transparent !important; /* Chặn hoàn toàn màu nền khi chạm trên điện thoại */
+    
+    /* Bóng mặc định nhẹ */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 .product-card.reverse {
@@ -238,65 +240,32 @@ a.product-card {
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
-    background-color: #fff !important; /* Cố định phần nội dung nền trắng */
-}
-
-.card-cta-badge {
-    position: absolute;
-    bottom: 12px;
-    right: 15px;
-    background-color: #784212;
-    color: #ffffff;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    opacity: 0;
-    transform: translateY(5px);
-    transition: all 0.3s ease;
-    pointer-events: none;
-    box-shadow: 0 4px 10px rgba(120, 66, 18, 0.3);
-}
-
-.product-card.product-highlight .card-cta-badge {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Khi bấm hoặc focus vào sản phẩm, khóa chặt màu nền là màu trắng, tuyệt đối không chuyển nâu */
-.product-card, 
-a.product-card {
-    width: 100%;
-    max-width: 410px;
-    height: 180px;
-    border: 2px solid #784212;
-    border-radius: 16px;
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
     background-color: #fff !important;
-    display: flex;
-    text-decoration: none;
-    
-    /* Cố định tâm ở giữa */
-    transform-origin: center center;
-    
-    /* Dùng hàm cubic-bezier mềm mại, uyển chuyển, không bị giật cục */
-    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease !important;
-    opacity: 1;
-    
-    /* Bóng mặc định nhẹ */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Hiệu ứng co giãn mềm mại tại chỗ, đứng yên tuyệt đối không ảnh hưởng vị trí top */
+/* Hiệu ứng co giãn mềm mại khi HOVER hoặc ACTIVE */
 .product-card:hover, 
 a.product-card:hover,
 .product-card:active,
 a.product-card:active {
-    transform: scale(1.02); /* Phóng to rất nhẹ nhàng (2%) tại chỗ */
+    transform: scale(1.02); /* Phồng nhẹ 2% tại chỗ, giữ nguyên vị trí top */
     box-shadow: 0 10px 24px rgba(120, 66, 18, 0.15); /* Đổ bóng lan tỏa êm dịu */
+}
+
+/* --- HIỆU ỨNG TÌM KIẾM MÃ SẢN PHẨM --- */
+
+/* Khi sản phẩm được tìm thấy: Nổi bật lên rõ rệt */
+.product-card.product-highlight {
+    transform: scale(1.04) !important;
+    box-shadow: 0 16px 32px rgba(120, 66, 18, 0.3) !important;
+    border-color: #d97706 !important;
+    z-index: 10;
+}
+
+/* Khi các sản phẩm khác không khớp: Làm mờ đi */
+.product-card.product-dimmed {
+    opacity: 0.35 !important;
+    filter: grayscale(30%);
 }
 
 /* 7. Responsive */
