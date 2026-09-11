@@ -1,10 +1,15 @@
-/* --- Áp dụng cho TOÀN BỘ trang web (Chặn bôi đen, chặn menu giữ ảnh trên điện thoại) --- */
+/* --- Chỉ chặn menu trên ảnh tĩnh, KHÔNG chặn thẻ a sản phẩm --- */
 body, html {
-    -webkit-user-select: none;     /* Chặn bôi đen trên Safari, iOS */
-    -moz-user-select: none;        /* Chặn bôi đen trên Firefox */
-    -ms-user-select: none;         /* Chặn bôi đen trên Edge/IE */
-    user-select: none;             /* Chuẩn chung cho các trình duyệt */
-    -webkit-touch-callout: none;   /* Chặn hiện menu bật lên (lưu ảnh, copy...) khi giữ tay lâu trên điện thoại */
+    -webkit-user-select: none;    
+    -moz-user-select: none;        
+    -ms-user-select: none;        
+    user-select: none;            
+    /* ĐÃ XÓA -webkit-touch-callout: none; ở đây để cho phép hiện preview link */
+}
+
+/* Riêng ảnh bìa, avatar thì vẫn chặn menu giữ ảnh lưu máy */
+.cover-photo img, .avatar-wrapper img, .card-image img {
+    -webkit-touch-callout: none;
 }
 
 /* Cho phép người dùng nhập liệu bình thường ở các ô tìm kiếm hoặc ô nhập văn bản */
