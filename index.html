@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phạm Vũ Quỳnh Mây</title>
+    <!-- Liên kết đến file CSS bên ngoài -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css">
+</head>
+<body>
+    <div class="bio-container">
+        <!-- 1. Ảnh bìa (Cover photo) -->
+        <div class="cover-photo">
+            <img src="generated-images__link-in-bio__header-block__home__155e7f6a-af6e-482b-82a9-f696f2c221dc__448709b6-f2b4-4eed-a0bf-a99daf469901.webp" alt="Cover">
+        </div>
+        <!-- 2. Avatar tròn -->
+        <div class="avatar-wrapper">
+            <img src="profile_phamvuquynhmay.png" alt="Avatar">
+        </div>
+        <!-- 3. Tên và Bio -->
+        <div class="profile-info">
+            <h1>Phạm Vũ Quỳnh Mây</h1>
+            <p>Contact for work</p>
+        </div>
+        <!-- 4. Các nút mạng xã hội -->
+        <div class="social-icons">
+            <a href="https://www.instagram.com/pvq.may_/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@phamvuquynhmay" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://www.facebook.com/maidaily.doxinh" target="_blank" title="Facebook"><i class="fa-brands fa-square-facebook"></i></a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mayphamvuquynh@gmail.com" target="_blank" title="Email"><i class="fa-regular fa-envelope"></i></a>
+        </div>
+        <!-- 5. Tiêu đề và Ô tìm kiếm mã sản phẩm -->
+        <div class="search-section">
+            <p class="search-label"><i>Đồ tui mặc bên dưới nha </i>⤵️</p>
+            <form onsubmit="event.preventDefault(); searchAndScroll();">
+                <input type="search" id="searchCodeInput" placeholder="các nàng nhập mã tìm đồ nha..." maxlength="4" enterkeyhint="search">
+            </form>
+        </div>
+        <!-- 6. Khu vực chứa danh sách sản phẩm (Sẽ được JavaScript tự động điền vào đây) -->
+        <div id="product-list" class="product-list">
+            <!-- Sản phẩm sẽ hiện ở đây -->
+        </div>
+    </div>
+    <!-- Liên kết đến file JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

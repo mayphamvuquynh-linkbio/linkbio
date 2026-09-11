@@ -1,0 +1,256 @@
+/* Thiết lập chung và body */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    position: relative;
+    background-color: #f9f6f0;
+    overflow-x: hidden;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('generated-images__link-in-bio__header-block__home__155e7f6a-af6e-482b-82a9-f696f2c221dc__448709b6-f2b4-4eed-a0bf-a99daf469901.webp');
+    background-size: cover;
+    background-position: center;
+    filter: blur(50px) brightness(1.4) saturate(1.3);
+    transform: scale(1.2);
+    z-index: -2;
+}
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: -1;
+}
+
+/* Khung chính của trang Bio */
+.bio-container {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(to bottom, #453731 0%, #5E524D 50%, #C2BAB6 75%, #FFFFFF 100%);
+    min-height: 100vh;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+    z-index: 1;
+    border-radius: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* 1. Ảnh bìa (Cover photo) */
+.cover-photo {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+.cover-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 2. Avatar tròn */
+.avatar-wrapper {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #fff;
+    margin: -50px auto 10px auto;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 3. Tên và Bio */
+.profile-info {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+.profile-info h1 {
+    font-size: 30px;
+    margin: 0 0 5px 0;
+    color: #ffffff;
+    font-weight: 700;
+    font-family: Playfair Display;
+}
+.profile-info p {
+    font-size: 16px;
+    color: #ffffff;
+    margin: 0;
+    font-family: Arima Madurai;
+}
+
+/* 4. Các nút mạng xã hội */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+.social-icons a {
+    font-size: 20px;
+    color: #784212;
+    background-color: #f9f6f0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.social-icons a:hover {
+    background-color: #784212;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* 5. Ô tìm kiếm */
+.search-section {
+    text-align: center;
+    padding: 0 20px;
+    margin-bottom: 25px;
+}
+.search-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fffc;
+    margin-bottom: 10px;
+    font-family: Arima Madurai;
+}
+#searchCodeInput {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 3px solid #784212;
+    border-radius: 25px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+#searchCodeInput:focus {
+    box-shadow: 0 0 8px rgba(120, 66, 18, 0.3);
+}
+
+/* 6. Khu vực danh sách sản phẩm */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.product-card {
+    width: 100%;
+    max-width: 410px;
+    height: 180px;
+    border: 2px solid #784212;
+    border-radius: 16px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    transition: all 0.4s ease !important;
+    opacity: 1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+.product-card.reverse {
+    flex-direction: row-reverse;
+}
+.product-card .card-image {
+    width: 50%;
+    height: 100%;
+    flex-shrink: 0;
+    background: #eee;
+}
+.product-card .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+.product-card .card-content {
+    width: 50%;
+    height: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.card-cta-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 15px;
+    background-color: #784212;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(120, 66, 18, 0.3);
+}
+.product-card.product-highlight .card-cta-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
+.product-card:active {
+    transform: scale(0.98);
+    border-color: #784212;  
+    box-shadow: 0 4px 12px rgba(120, 66, 18, 0.2);
+}
+.product-dimmed {
+    opacity: 0.35 !important;
+    transform: scale(0.98);
+}
+.product-highlight {
+    opacity: 1 !important;
+    transform: scale(1.04) !important;
+    box-shadow: 0 15px 40px rgba(120, 66, 18, 0.35) !important;
+    z-index: 999 !important;
+    border-color: #5a310d !important;
+}
+
+/* 7. Responsive */
+@media (min-width: 768px) {
+    body {
+        padding: 0 !important;
+    }
+    .bio-container {
+        border-radius: 0 !important;
+        min-height: 100vh;
+    }
+}
