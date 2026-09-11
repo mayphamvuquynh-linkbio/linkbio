@@ -187,7 +187,7 @@ body::after {
     box-sizing: border-box;
 }
 
-/* Khung sản phẩm chuẩn: Cố định tâm, hiệu ứng co giãn mềm mại tại chỗ không dịch chuyển top */
+/* Khung sản phẩm chuẩn: Mở hoàn toàn tính năng chạm giữ xem trước link (Preview) */
 .product-card, 
 a.product-card {
     width: 100%;
@@ -202,16 +202,12 @@ a.product-card {
     display: flex;
     text-decoration: none;
     
-    /* Cố định tâm ở chính giữa để phóng to/thu nhỏ tại chỗ */
     transform-origin: center center;
-    
-    /* Chuyển động mượt mà, uyển chuyển */
     transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease, opacity 0.4s ease, filter 0.4s ease !important;
     opacity: 1;
-    
-    /* Bóng mặc định nhẹ */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     
+    /* CHÚ Ý: Đã gỡ bỏ touch-callout và user-select chặn trên thẻ a để cho phép hiện preview */
     -webkit-user-select: none !important;
     user-select: none !important;
 }
@@ -225,9 +221,7 @@ a.product-card {
     height: 100%;
     flex-shrink: 0;
     background: #eee;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
+    /* Gỡ bỏ mọi lệnh chặn touch-callout ở vùng ảnh */
 }
 
 .product-card .card-image img {
@@ -235,9 +229,10 @@ a.product-card {
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
-    -webkit-touch-callout: none !important;
-    -webkit-user-drag: none !important;
-    pointer-events: none; /* Giúp thao tác bấm xuyên qua ảnh vào link mượt hơn */
+    
+    /* QUAN TRỌNG: Gỡ bỏ pointer-events: none để khi người dùng nhấn giữ vào ảnh, 
+       trình duyệt nhận diện đúng là đang bấm vào link nằm trong thẻ a và bật Preview */
+    -webkit-user-drag: none;
 }
 
 .product-card .card-content {
@@ -256,13 +251,11 @@ a.product-card {
 a.product-card:hover,
 .product-card:active,
 a.product-card:active {
-    transform: scale(1.02); /* Phồng nhẹ 2% tại chỗ, giữ nguyên vị trí top */
-    box-shadow: 0 10px 24px rgba(120, 66, 18, 0.15); /* Đổ bóng lan tỏa êm dịu */
+    transform: scale(1.02);
+    box-shadow: 0 10px 24px rgba(120, 66, 18, 0.15);
 }
 
 /* --- HIỆU ỨNG TÌM KIẾM MÃ SẢN PHẨM --- */
-
-/* Khi sản phẩm được tìm thấy: Nổi bật lên rõ rệt */
 .product-card.product-highlight {
     transform: scale(1.04) !important;
     box-shadow: 0 16px 32px rgba(120, 66, 18, 0.3) !important;
@@ -270,12 +263,21 @@ a.product-card:active {
     z-index: 10;
 }
 
-/* Khi các sản phẩm khác không khớp: Làm mờ đi */
 .product-card.product-dimmed {
     opacity: 0.35 !important;
     filter: grayscale(30%);
 }
 
+/* 7. Responsive */
+@media (min-width: 768px) {
+    body {
+        padding: 0 !important;
+    }
+    .bio-container {
+        border-radius: 0 !important;
+        min-height: 100vh;
+    }
+}
 /* 7. Responsive */
 @media (min-width: 768px) {
     body {
