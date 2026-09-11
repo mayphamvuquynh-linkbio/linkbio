@@ -257,10 +257,6 @@ a.product-card {
     box-sizing: border-box;
     background-color: #fff !important;
     
-    /* Chặn bôi đen chữ bên trong card khi người dùng lỡ giữ tay lâu */
-    /* -webkit-touch-callout: none !important; */
-    -webkit-user-select: none !important;
-    user-select: none !important;
 }
 
 /* 7. Responsive */
