@@ -40,11 +40,9 @@ function renderProducts() {
         const isReverse = index % 2 !== 0;
         const cardClass = isReverse ? 'product-card reverse' : 'product-card';
 
+        // Biến trực tiếp khung sản phẩm thành thẻ a để bấm mượt mà, không bị lỗi nền nâu
         html += `
-            <div id="card-${item.id}" class="${cardClass}" data-id="${item.id}">
-                <!-- Thẻ link phủ kín khung -->
-                <a href="${item.link}" target="_blank" style="position: absolute; width: 100%; height: 100%; z-index: 10; text-decoration: none;"></a>
-                
+            <a href="${item.link}" target="_blank" id="card-${item.id}" class="${cardClass}" data-id="${item.id}" style="text-decoration: none; -webkit-tap-highlight-color: transparent;">
                 <!-- Nửa ảnh (50%) -->
                 <div class="card-image">
                     <img src="${item.image}" alt="Mã ${item.id}">
@@ -57,7 +55,7 @@ function renderProducts() {
                         ${item.title}
                     </p>
                 </div>
-            </div>
+            </a>
         `;
     });
 
