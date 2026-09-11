@@ -1,3 +1,18 @@
+/* --- Áp dụng cho TOÀN BỘ trang web --- */
+body, html {
+    -webkit-user-select: none;     /* Chặn bôi đen trên Safari, iOS */
+    -moz-user-select: none;        /* Chặn bôi đen trên Firefox */
+    -ms-user-select: none;         /* Chặn bôi đen trên Edge/IE */
+    user-select: none;             /* Chuẩn chung cho các trình duyệt */
+    -webkit-touch-callout: none;   /* Chặn hiện menu bật lên (lưu ảnh, copy...) khi giữ tay lâu trên điện thoại */
+}
+
+/* Cho phép người dùng nhập liệu bình thường ở các ô tìm kiếm hoặc ô nhập văn bản (nếu có) */
+input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 /* Thiết lập chung và body */
 body {
     margin: 0;
@@ -262,23 +277,26 @@ a.product-card {
     background-color: #fff !important;
     display: flex;
     text-decoration: none;
-    transition: all 0.4s ease !important;
+    
+    /* Cố định tâm ở giữa */
+    transform-origin: center center;
+    
+    /* Dùng hàm cubic-bezier mềm mại, uyển chuyển, không bị giật cục */
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease !important;
     opacity: 1;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    
+    /* Bóng mặc định nhẹ */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     -webkit-tap-highlight-color: transparent !important;
 }
 
-.product-dimmed {
-    opacity: 0.35 !important;
-    transform: scale(0.98);
-}
-
-.product-highlight {
-    opacity: 1 !important;
-    transform: scale(1.04) !important;
-    box-shadow: 0 15px 40px rgba(120, 66, 18, 0.35) !important;
-    z-index: 999 !important;
-    border-color: #5a310d !important;
+/* Hiệu ứng co giãn mềm mại tại chỗ, đứng yên tuyệt đối không ảnh hưởng vị trí top */
+.product-card:hover, 
+a.product-card:hover,
+.product-card:active,
+a.product-card:active {
+    transform: scale(1.02); /* Phóng to rất nhẹ nhàng (2%) tại chỗ */
+    box-shadow: 0 10px 24px rgba(120, 66, 18, 0.15); /* Đổ bóng lan tỏa êm dịu */
 }
 
 /* 7. Responsive */
