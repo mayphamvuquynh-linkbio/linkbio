@@ -258,7 +258,7 @@ a.product-card {
     background-color: #fff !important;
     
     /* Chặn bôi đen chữ bên trong card khi người dùng lỡ giữ tay lâu */
-    -webkit-touch-callout: none !important;
+    /* -webkit-touch-callout: none !important; */
     -webkit-user-select: none !important;
     user-select: none !important;
 }
