@@ -159,7 +159,7 @@ body::after {
 }
 #searchCodeInput {
     width: 100%;
-    max-width: 320px;
+    max-width: 300px;
     padding: 6px 10px;
     border: 2px solid #784212;
     border-radius: 25px;
