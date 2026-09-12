@@ -22,10 +22,10 @@ async function renderProducts() {
 
         // Chuyển đổi dữ liệu từ Sheet sang cấu trúc chuẩn và sắp xếp mã sản phẩm từ lớn đến bé (mã mới lên đầu)
         let products = data.map(item => ({
-            id: Number(item.ID),
-            title: item['Tên Sản Phẩm'],
-            image: item['Ảnh Sản Phẩm'],
-            link: item['Link Shope']
+            id: Number(item.id),
+            title: item['tên sản phẩm'],
+            image: item['ảnh sản phẩm'],
+            link: item['linkshopee']
         }));
 
         products.sort((a, b) => b.id - a.id);
