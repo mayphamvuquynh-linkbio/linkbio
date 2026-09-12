@@ -16,7 +16,7 @@ async function renderProducts() {
         const data = await response.json();
 
         if (!data || data.length === 0) {
-            listContainer.innerHTML = `<p style="text-align: center; color: #784212; padding: 20px;">Chưa có sản phẩm nào trong Google Sheet.</p>`;
+            listContainer.innerHTML = `<p style="text-align: center; color: #784212; padding: 20px;">Chưa có sản phẩm nào </p>`;
             return;
         }
 
