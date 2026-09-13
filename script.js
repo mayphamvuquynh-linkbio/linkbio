@@ -62,7 +62,7 @@ async function renderProducts() {
     }
 }
 
-// --- HÀM TÌM KIẾM VÀ CUỘN (HIỂN THỊ THÔNG BÁO LÊN GIAO DIỆN, CHỐNG CHẶN BỞI MESSENGER) ---
+// --- 3. HÀM TÌM KIẾM VÀ CUỘN (HIỂN THỊ THÔNG BÁO LÊN GIAO DIỆN, CHỐNG CHẶN BỞI MESSENGER) ---
 function searchAndScroll() {
     const input = document.getElementById('searchCodeInput');
     const messageBox = document.getElementById('searchMessage'); // Thẻ hiển thị thông báo trên web
@@ -144,6 +144,19 @@ function resetSearchState() {
     });
 }
 
+// --- 5. HÀM CUỘN NGƯỢC LÊN Ô TÌM KIẾM (CHO NÚT NỔI) ---
+function scrollToSearch() {
+    const input = document.getElementById('searchCodeInput');
+    if (input) {
+        // Cuộn mượt lên đầu trang
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Tự động focus vào ô nhập mã để khách gõ tiếp
+        setTimeout(() => {
+            input.focus();
+        }, 300);
+    }
+}
+
 // Khởi chạy khi trang tải xong
 document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
@@ -158,8 +171,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Xử lý sự kiện cuộn trang chung
     window.addEventListener('scroll', () => {
         const input = document.getElementById('searchCodeInput');
+        const btn = document.getElementById('backToTopBtn');
+
+        // Kiểm soát hiện/ẩn nút nổi (xuống quá 300px thì hiện)
+        if (btn) {
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+
+        // Reset trạng thái tìm kiếm nếu người dùng tự lướt tay thủ công
         if (!isAutoScrolling && input && input.value.trim() !== "") {
             resetSearchState();
         }

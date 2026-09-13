@@ -269,6 +269,62 @@ a.product-card:active {
     filter: grayscale(30%);
 }
 
+/* --- NÚT NỔI QUAY LẠI Ô TÌM KIẾM (Sát lề phải) --- */
+#backToTopBtn {
+    position: fixed;
+    bottom: 50px;
+    right: -1px;   /* Chỉnh số này nhỏ lại để nút dịch sát sang phải hơn (có thể đổi thành 8px hoặc 12px tùy ý) */
+    z-index: 99;
+    width: 42px;   
+    height: 42px;
+    background-color: #784212; /* Tông màu chủ đạo */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Xếp icon ở trên, chữ ở dưới */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+}
+
+/* Định dạng icon mũi tên bên trong */
+#backToTopBtn i {
+    font-size: 13px;
+    margin-bottom: 1px;
+}
+
+/* Định dạng dòng chữ "quay lại" nhỏ xinh bên trong nút */
+#backToTopBtn span {
+    font-size: 8px;
+    font-family: Arima Madurai, sans-serif;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.2px;
+}
+
+/* Khi cuộn trang xuống đủ điều kiện thì nút sẽ hiện lên */
+#backToTopBtn.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hiệu ứng khi rê chuột hoặc chạm vào nút */
+#backToTopBtn:hover {
+    transform: scale(1.08);
+    background-color: #5E524D;
+}
+
+#backToTopBtn:active {
+    transform: scale(0.95);
+}
+
 /* 7. Responsive */
 @media (min-width: 768px) {
     body {
