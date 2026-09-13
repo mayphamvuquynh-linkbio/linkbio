@@ -268,22 +268,22 @@ a.product-card:active {
     opacity: 0.35 !important;
     filter: grayscale(30%);
 }
-
-/* --- NÚT NỔI QUAY LẠI Ô TÌM KIẾM (Sát lề phải) --- */
+/* --- NÚT QUAY LẠI CHỈ CÓ ICON MŨI TÊN --- */
 #backToTopBtn {
-    position: fixed;
-    bottom: 50px;
-    right: -1px;   /* Chỉnh số này nhỏ lại để nút dịch sát sang phải hơn (có thể đổi thành 8px hoặc 12px tùy ý) */
+    position: sticky;
+    float: right;
+    bottom: 20px;
+    margin-right: 0px;
+    margin-top: -50px; /* Điều chỉnh lại khoảng cách cho cân đối khi không có chữ */
     z-index: 99;
-    width: 42px;   
-    height: 42px;
+    width: 38px;   /* Thu nhỏ kích thước lại chút cho gọn gàng */
+    height: 38px;
     background-color: #784212; /* Tông màu chủ đạo */
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
-    flex-direction: column; /* Xếp icon ở trên, chữ ở dưới */
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -294,19 +294,9 @@ a.product-card:active {
     padding: 0;
 }
 
-/* Định dạng icon mũi tên bên trong */
+/* Định dạng icon mũi tên nằm chính giữa nút */
 #backToTopBtn i {
-    font-size: 13px;
-    margin-bottom: 1px;
-}
-
-/* Định dạng dòng chữ "quay lại" nhỏ xinh bên trong nút */
-#backToTopBtn span {
-    font-size: 8px;
-    font-family: Arima Madurai, sans-serif;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.2px;
+    font-size: 14px;
 }
 
 /* Khi cuộn trang xuống đủ điều kiện thì nút sẽ hiện lên */
