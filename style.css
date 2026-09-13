@@ -14,19 +14,19 @@ input, textarea {
 }
 
 /* Thiết lập chung và body */
+/* Thiết lập chung và body */
 body {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    display: block; /* Đổi từ flex sang block để khung dính sát đỉnh */
     min-height: 100vh;
     position: relative;
     background-color: #f9f6f0;
     overflow-x: hidden;
 }
+
 body::before {
     content: "";
     position: fixed;
@@ -64,7 +64,7 @@ body::after {
     box-sizing: border-box;
     z-index: 1;
     border-radius: 0 !important;
-    margin-top: 0 !important;
+    margin: 0 auto !important; /* Đảm bảo căn giữa trên PC và dính sát đỉnh trên mobile */
 }
 
 /* 1. Ảnh bìa (Cover photo) */
