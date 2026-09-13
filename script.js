@@ -20,26 +20,27 @@ async function renderProducts() {
             return;
         }
 
-        // Chuyển đổi dữ liệu từ Sheet sang cấu trúc chuẩn và sắp xếp mã sản phẩm từ lớn đến bé (mã mới lên đầu)
         let products = data.map(item => ({
-            id: Number(item.ID),
+            id: String(item.ID).trim(),
+            numericId: Number(item.ID) || 0,
             title: item['Tên Sản Phẩm'],
             image: item['Ảnh Sản Phẩm'],
             link: item['Link Shope']
         }));
 
-        products.sort((a, b) => b.id - a.id);
+        products.sort((a, b) => b.numericId - a.numericId);
 
         let html = '';
         products.forEach((item, index) => {
             const isReverse = index % 2 !== 0;
             const cardClass = isReverse ? 'product-card reverse' : 'product-card';
 
+            // Gắn data-id chính xác tuyệt đối để dùng cho việc tìm kiếm
             html += `
-                <a href="${item.link}" target="_blank" id="card-${item.id}" class="${cardClass}" data-id="${item.id}" style="text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform 0.1s ease;" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+                <a href="${item.link}" target="_blank" class="${cardClass}" data-id="${item.id}" style="text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform 0.1s ease;" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
                     <!-- Nửa ảnh (50%) -->
                     <div class="card-image">
-                        <img src="${item.image}" alt="Mã ${item.id}">
+                        <img src="${item.image}" alt="">
                     </div>
 
                     <!-- Nửa thông tin text (50%) -->
@@ -61,11 +62,59 @@ async function renderProducts() {
     }
 }
 
+// // --- 3. HÀM TÌM KIẾM VÀ CUỘN (DÙNG DATA-ID QUÉT TRỰC TIẾP) ---
+// function searchAndScroll() {
+//     const input = document.getElementById('searchCodeInput');
+//     if (!input) return;
+    
+//     const keyword = input.value.trim();
+//     const allCards = document.querySelectorAll('.product-card');
+
+//     if (!keyword) {
+//         resetSearchState();
+//         return;
+//     }
+
+//     let targetCard = null;
+
+//     // Quét qua tất cả các thẻ card để tìm card có data-id khớp chính xác với keyword
+//     allCards.forEach(card => {
+//         if (card.getAttribute('data-id') === keyword) {
+//             targetCard = card;
+//         }
+//     });
+
+//     // Xóa hiệu ứng cũ trên tất cả các ô
+//     allCards.forEach(card => {
+//         card.classList.remove('product-highlight', 'product-dimmed');
+//     });
+
+//     if (targetCard) {
+//         input.blur();
+//         isAutoScrolling = true;
+
+//         targetCard.classList.add('product-highlight');
+//         allCards.forEach(card => {
+//             if (card !== targetCard) {
+//                 card.classList.add('product-dimmed');
+//             }
+//         });
+
+//         targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+//         setTimeout(() => {
+//             isAutoScrolling = false;
+//         }, 800);
+//     } else {
+//         alert(`Không tìm thấy sản phẩm có mã số: ${keyword}`);
+//     }
+// }
+
+// --- HÀM TÌM KIẾM VÀ CUỘN (NHẢY TỨC THÌ ĐẢM BẢO 100% ĂN HIỆU ỨNG) ---
 function searchAndScroll() {
     const input = document.getElementById('searchCodeInput');
     if (!input) return;
     
-    // Thêm .trim() và chuyển đổi chuẩn xác để loại bỏ khoảng trắng thừa
     const keyword = input.value.trim();
     const allCards = document.querySelectorAll('.product-card');
 
@@ -74,13 +123,12 @@ function searchAndScroll() {
         return;
     }
 
-    // Tìm kiếm chính xác card dựa vào data-id hoặc ID để tránh lệch DOM
-    let targetCard = document.getElementById(`card-${keyword}`);
-    
-    // Dự phòng tìm kiếm bằng thuộc tính data-id nếu DOM có vấn đề
-    if (!targetCard) {
-        targetCard = document.querySelector(`.product-card[data-id="${keyword}"]`);
-    }
+    let targetCard = null;
+    allCards.forEach(card => {
+        if (card.getAttribute('data-id') === keyword) {
+            targetCard = card;
+        }
+    });
 
     // Xóa hiệu ứng cũ trên tất cả các ô
     allCards.forEach(card => {
@@ -88,13 +136,10 @@ function searchAndScroll() {
     });
 
     if (targetCard) {
-        // 1. Tự động ẩn bàn phím điện thoại
         input.blur();
-
-        // 2. Bật cờ khóa sự kiện cuộn
         isAutoScrolling = true;
 
-        // 3. Làm nổi bật sản phẩm tìm thấy và làm mờ các ô khác
+        // Bật ngay lập tức hiệu ứng sáng/mờ
         targetCard.classList.add('product-highlight');
         allCards.forEach(card => {
             if (card !== targetCard) {
@@ -102,10 +147,10 @@ function searchAndScroll() {
             }
         });
 
-        // 4. Tự động cuộn mượt mà đến ô sản phẩm đó
-        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Nhảy thẳng đến sản phẩm lập tức (bằng 'auto' để không bị nghẽn lệnh)
+        targetCard.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-        // Mở khóa lại cờ cuộn sau khi hoàn tất hiệu ứng cuộn
+        // Mở khóa cờ cuộn
         setTimeout(() => {
             isAutoScrolling = false;
         }, 800);
@@ -114,11 +159,11 @@ function searchAndScroll() {
     }
 }
 
-// --- 4. HÀM RESET TRẠNG THÁI SẢN PHẨM VÀ Ô TÌM KIẾM ---
+// --- 4. HÀM RESET TRẠNG THÁI ---
 function resetSearchState() {
     const input = document.getElementById('searchCodeInput');
     if (input) {
-        input.value = ""; // Xóa trắng ô tìm kiếm
+        input.value = "";
     }
     
     const allCards = document.querySelectorAll('.product-card');
@@ -133,16 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById('searchCodeInput');
     if (input) {
-        // Bắt sự kiện nhấn phím Enter trên điện thoại/máy tính
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                searchAndScroll(); // Đã sửa lại gọi đúng hàm searchAndScroll()
+                searchAndScroll();
             }
         });
     }
 
-    // Lắng nghe sự kiện người dùng tự cuộn trang
     window.addEventListener('scroll', () => {
         const input = document.getElementById('searchCodeInput');
         if (!isAutoScrolling && input && input.value.trim() !== "") {
