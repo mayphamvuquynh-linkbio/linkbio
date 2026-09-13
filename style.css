@@ -13,7 +13,27 @@ input, textarea {
     user-select: text;
 }
 
-/* Thiết lập chung và body */
+/* Cho phép trang web tràn lên cả vùng tai thỏ / Dynamic Island của điện thoại */
+html {
+    background-color: #453731; /* Khớp với màu sắc phần trên cùng của ảnh bìa/nền */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #453731;
+    /* Ép nội dung kéo sát lên tận mép trên cùng của màn hình, bất chấp tai thỏ */
+    padding-top: env(safe-area-inset-top); 
+}
+
+/* Kéo ảnh bìa bám sát viền đỉnh */
+.cover-photo {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    margin-top: calc(-1 * env(safe-area-inset-top)); /* Kéo bù lên trên mép điện thoại */
+}
+
 /* Thiết lập chung và body */
 body {
     margin: 0;
