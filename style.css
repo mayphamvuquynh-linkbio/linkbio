@@ -144,11 +144,20 @@ body::after {
     transform: scale(0.95);
 }
 
+/* --- ĐƯỜNG GẠCH --- */
+hr.divider {
+    border: none;
+    height: 1.5px;
+    background-color: #ffffff;
+    width: 65%;
+    margin: 10px auto 15px auto; /* Sửa lại dòng này: 10px ở phía trên, 15px ở phía dưới */
+    opacity: 0.6;
+}
+
 /* 5. Ô tìm kiếm */
 .search-section {
     text-align: center;
     padding: 0 20px;
-    margin-bottom: 25px;
 }
 .search-label {
     font-size: 18px;
