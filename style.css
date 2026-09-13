@@ -7,6 +7,10 @@ body, html {
     /* ĐÃ XÓA -webkit-touch-callout: none; ở đây để cho phép hiện preview link */
 }
 
+/* html {
+    scroll-behavior: smooth;
+} */
+
 /* Cho phép người dùng nhập liệu bình thường ở các ô tìm kiếm hoặc ô nhập văn bản */
 input, textarea {
     -webkit-user-select: text;

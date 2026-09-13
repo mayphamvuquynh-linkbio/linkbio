@@ -144,17 +144,26 @@ function resetSearchState() {
     });
 }
 
-// --- 5. HÀM CUỘN NGƯỢC LÊN Ô TÌM KIẾM (CHO NÚT NỔI) ---
+// --- 5. HÀM CUỘN NGƯỢC LÊN Ô TÌM KIẾM (TỐI ƯU ĐỂ LĂN MƯỚT TỪ DƯỚI LÊN) ---
 function scrollToSearch() {
     const input = document.getElementById('searchCodeInput');
-    if (input) {
-        // Cuộn mượt lên đầu trang
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        // Tự động focus vào ô nhập mã để khách gõ tiếp
-        setTimeout(() => {
+    
+    // Bật cờ cấm sự kiện scroll bắt nhầm là "người dùng tự lướt tay" trong lúc đang trôi về đỉnh
+    isAutoScrolling = true;
+
+    // Kích hoạt cuộn mượt mướt rượt lên đầu trang
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+    // Sau khi cuộn lên xong xuôi thì mở khóa cờ và focus vào ô nhập mã
+    setTimeout(() => {
+        isAutoScrolling = false;
+        if (input) {
             input.focus();
-        }, 300);
-    }
+        }
+    }, 500); // Khớp thời gian trượt mượt của trình duyệt
 }
 
 // Khởi chạy khi trang tải xong
@@ -171,11 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // BỔ SUNG: Lắng nghe thao tác xóa chữ trực tiếp (Xóa trắng là tự thụt xuống ngay lập tức)
+        // Lắng nghe thao tác xóa chữ trực tiếp (Xóa trắng là tự thụt xuống ngay lập tức)
         input.addEventListener('input', (e) => {
             const keyword = e.target.value.trim();
             if (keyword === "") {
-                searchAndScroll(); // Gọi hàm xử lý khi ô trống để kích hoạt reset
+                searchAndScroll(); 
             }
         });
     }
