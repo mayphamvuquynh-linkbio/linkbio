@@ -61,11 +61,11 @@ async function renderProducts() {
     }
 }
 
-// --- 3. HÀM TÌM KIẾM VÀ CUỘN (KHI BẤM ENTER HOẶC NÚT TÌM) ---
 function searchAndScroll() {
     const input = document.getElementById('searchCodeInput');
     if (!input) return;
     
+    // Thêm .trim() và chuyển đổi chuẩn xác để loại bỏ khoảng trắng thừa
     const keyword = input.value.trim();
     const allCards = document.querySelectorAll('.product-card');
 
@@ -74,7 +74,13 @@ function searchAndScroll() {
         return;
     }
 
-    const targetCard = document.getElementById(`card-${keyword}`);
+    // Tìm kiếm chính xác card dựa vào data-id hoặc ID để tránh lệch DOM
+    let targetCard = document.getElementById(`card-${keyword}`);
+    
+    // Dự phòng tìm kiếm bằng thuộc tính data-id nếu DOM có vấn đề
+    if (!targetCard) {
+        targetCard = document.querySelector(`.product-card[data-id="${keyword}"]`);
+    }
 
     // Xóa hiệu ứng cũ trên tất cả các ô
     allCards.forEach(card => {
