@@ -62,15 +62,16 @@ async function renderProducts() {
     }
 }
 
-// --- 3. HÀM TÌM KIẾM VÀ CUỘN (HIỂN THỊ THÔNG BÁO LÊN GIAO DIỆN, CHỐNG CHẶN BỞI MESSENGER) ---
+// --- 3. HÀM TÌM KIẾM VÀ CUỘN ---
 function searchAndScroll() {
     const input = document.getElementById('searchCodeInput');
-    const messageBox = document.getElementById('searchMessage'); // Thẻ hiển thị thông báo trên web
+    const messageBox = document.getElementById('searchMessage');
     if (!input) return;
     
     const keyword = input.value.trim();
     const allCards = document.querySelectorAll('.product-card');
 
+    // NẾU Ô TÌM KIẾM TRỐNG: Tự động reset ngay lập tức mà không cần bấm gì thêm
     if (!keyword) {
         if (messageBox) messageBox.innerText = "";
         resetSearchState();
@@ -90,13 +91,11 @@ function searchAndScroll() {
     });
 
     if (targetCard) {
-        // Xóa thông báo lỗi trước đó nếu tìm thấy sản phẩm
         if (messageBox) messageBox.innerText = "";
 
         input.blur();
         isAutoScrolling = true;
 
-        // Bật ngay lập tức hiệu ứng sáng/mờ
         targetCard.classList.add('product-highlight');
         allCards.forEach(card => {
             if (card !== targetCard) {
@@ -104,19 +103,15 @@ function searchAndScroll() {
             }
         });
 
-        // Nhảy thẳng đến sản phẩm lập tức (bằng 'auto' để không bị nghẽn lệnh)
         targetCard.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-        // Mở khóa cờ cuộn
         setTimeout(() => {
             isAutoScrolling = false;
         }, 800);
     } else {
-        // KHÔNG TÌM THẤY: In thẳng chữ lên giao diện web (Trình duyệt Messenger không thể chặn được)
         if (messageBox) {
             messageBox.innerText = `Mã ${keyword} này chưa có nha`;
             
-            // Tự động xóa thông báo sau 3 giây cho đỡ rối mắt
             setTimeout(() => {
                 if (messageBox.innerText === `Mã ${keyword} này chưa có nha`) {
                     messageBox.innerText = "";
@@ -129,9 +124,7 @@ function searchAndScroll() {
 // --- 4. HÀM RESET TRẠNG THÁI ---
 function resetSearchState() {
     const input = document.getElementById('searchCodeInput');
-    if (input) {
-        input.value = "";
-    }
+    // Lưu ý: Không tự động gán input.value = "" ở đây để tránh làm gián đoạn sự kiện đang xóa của người dùng
     
     const messageBox = document.getElementById('searchMessage');
     if (messageBox) {
@@ -163,9 +156,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById('searchCodeInput');
     if (input) {
+        // Xử lý khi nhấn nút Enter trên bàn phím
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                searchAndScroll();
+            }
+        });
+
+        // BẮT SỰ KIỆN GÕ/XÓA CHỮ THEO THỜI GIAN THỰC (Tự động cập nhật không cần Enter)
+        input.addEventListener('input', (e) => {
+            const keyword = e.target.value.trim();
+            
+            // Nếu ô tìm kiếm trống, gọi thẳng hàm tìm kiếm (hàm searchAndScroll đã có sẵn logic bắt keyword rỗng để gọi reset)
+            if (keyword === "") {
+                searchAndScroll();
+            } else {
                 searchAndScroll();
             }
         });
