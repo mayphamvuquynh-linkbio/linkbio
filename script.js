@@ -154,10 +154,11 @@ function searchAndScroll() {
         setTimeout(() => {
             isAutoScrolling = false;
         }, 800);
-    } else {
-        alert(`Không tìm thấy sản phẩm có mã số: ${keyword}`);
-    }
+    }  else {
+    alert('Mã ' + keyword + ' này chưa có nha');
 }
+}
+
 
 // --- 4. HÀM RESET TRẠNG THÁI ---
 function resetSearchState() {

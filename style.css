@@ -188,6 +188,7 @@ body::after {
 }
 
 /* Khung sản phẩm chuẩn: Mở hoàn toàn tính năng chạm giữ xem trước link (Preview) */
+
 .product-card, 
 a.product-card {
     width: 100%;
