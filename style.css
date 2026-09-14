@@ -17,27 +17,6 @@ input, textarea {
     user-select: text;
 }
 
-/* Cho phép trang web tràn lên cả vùng tai thỏ / Dynamic Island của điện thoại */
-html {
-    background-color: #453731; /* Khớp với màu sắc phần trên cùng của ảnh bìa/nền */
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #453731;
-    /* Ép nội dung kéo sát lên tận mép trên cùng của màn hình, bất chấp tai thỏ */
-    padding-top: env(safe-area-inset-top); 
-}
-
-/* Kéo ảnh bìa bám sát viền đỉnh */
-.cover-photo {
-    width: 100%;
-    height: 180px;
-    overflow: hidden;
-    margin-top: calc(-1 * env(safe-area-inset-top)); /* Kéo bù lên trên mép điện thoại */
-}
-
 /* Thiết lập chung và body */
 body {
     margin: 0;
@@ -59,7 +38,6 @@ body::before {
     width: 100vw;
     height: 100vh;
     background-image: url('generated-images__link-in-bio__header-block__home__155e7f6a-af6e-482b-82a9-f696f2c221dc__448709b6-f2b4-4eed-a0bf-a99daf469901.webp');
-    background-size: cover;
     background-position: center;
     filter: blur(50px) brightness(1.4) saturate(1.3);
     transform: scale(1.2);
