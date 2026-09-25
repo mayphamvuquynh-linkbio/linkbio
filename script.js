@@ -62,7 +62,15 @@ async function fetchProductsFromAPI() {
         renderProductList();
     } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
-        listContainer.innerHTML = `<p style="text-align: center; color: red; padding: 20px;">Không thể tải dữ liệu sản phẩm từ Google Sheet.</p>`;
+        
+        // CỨU CÁNH KHI MẠNG YẾU / MẤT KẾT NỐI: Tận dụng lại cache cũ (dù đã quá hạn) để khách vẫn xem được đồ
+        const oldCache = localStorage.getItem(CACHE_KEY);
+        if (oldCache) {
+            allProductsData = JSON.parse(oldCache);
+            renderProductList();
+        } else {
+            listContainer.innerHTML = `<p style="text-align: center; color: #784212; padding: 20px;">Mạng hơi yếu, các nàng đợi tí hoặc tải lại trang nha! 🥺</p>`;
+        }
     }
 }
 
