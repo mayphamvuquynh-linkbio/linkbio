@@ -1,5 +1,5 @@
 // --- 1. BIẾN KẾT NỐI API GOOGLE SHEET & CẤU HÌNH PHÂN TRANG ---
-const SHEET_API_URL = 'https://api.sheetbest.com/sheets/ba7761b0-8931-4778-b978-cc21d71cf1c2';
+const SHEET_API_URL = 'https://api.sheetbest.com/sheets/e31b57ec-259b-411b-a103-941976dd29ce';
 const CACHE_KEY = 'bio_products_cache_v1';
 const CACHE_TIME_KEY = 'bio_products_time_v1';
 const CACHE_DURATION = 5 * 60 * 1000; // Thời hạn cache: 5 phút
