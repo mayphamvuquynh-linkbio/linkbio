@@ -1,5 +1,5 @@
 // --- 1. BIẾN KẾT NỐI API GOOGLE SHEET & CẤU HÌNH PHÂN TRANG ---
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwBxA04mVM16OvCe33bITuTY5L_tnkHSFITXAlmrYljPQrrQuj6H6alMppDUImOk5tz9Q/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyNxaghWzhaU5gILoTZfO0CHDrIzKZhUAT3z05TEhBWhFyvw9auF6PAoERez3c8_mZ0Hw/exec';
 const CACHE_KEY = 'bio_products_cache_v1';
 const CACHE_TIME_KEY = 'bio_products_time_v1';
 const CACHE_DURATION = 5 * 60 * 1000; // Thời hạn cache: 5 phút
