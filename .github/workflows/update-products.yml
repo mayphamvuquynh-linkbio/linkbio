@@ -1,0 +1,40 @@
+name: Cập nhật products.json từ Google Sheet
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # mỗi 10 phút (GitHub có thể trễ vài phút khi đông)
+  workflow_dispatch:          # cho phép bấm chạy tay trong tab Actions
+
+permissions:
+  contents: write
+
+# Không chạy chồng nhiều lần cùng lúc
+concurrency:
+  group: update-products
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Lấy dữ liệu từ Google Sheet
+        run: node scripts/build-products.js
+
+      - name: Commit nếu có thay đổi
+        run: |
+          if [ -n "$(git status --porcelain products.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add products.json
+            git commit -m "cap nhat products.json tu Google Sheet"
+            git push
+          else
+            echo "Không có thay đổi."
+          fi

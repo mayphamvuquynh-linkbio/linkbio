@@ -1,0 +1,141 @@
+// ============================================================
+//  GOOGLE APPS SCRIPT - API đọc sản phẩm từ Google Sheet (bản tối ưu)
+//  Cách cập nhật: mở Apps Script -> dán đè toàn bộ code này -> Lưu ->
+//  Triển khai > Quản lý bản triển khai > Sửa (biểu tượng bút) > Phiên bản: Mới > Triển khai.
+//  (URL /exec giữ nguyên nên không phải đổi gì trong web.)
+//  Sau đó chạy hàm setupTriggers() MỘT LẦN và cấp quyền.
+// ============================================================
+
+var CACHE_KEY = 'products_v2';
+var CACHE_TTL = 21600;       // giây (6 giờ - mức tối đa của CacheService)
+var CHUNK_SIZE = 30000;      // ký tự mỗi mảnh. Giới hạn 100KB tính theo BYTE;
+                             // tiếng Việt tối đa 3 byte/ký tự nên 30000 ký tự luôn an toàn
+var SHEET_NAME = '';         // Điền tên tab chứa sản phẩm (ví dụ 'Sheet1'). Để trống = tab đầu tiên.
+
+// Chỉ giữ những cột web thật sự dùng (bỏ cột lỗi #REF!, cột thừa...)
+var WANTED_COLUMNS = ['ID', 'Tên Sản Phẩm', 'Ảnh Sản Phẩm', 'Link Shopee', 'Link Shope'];
+
+function doGet(e) {
+  try {
+    var json = getCache_(CACHE_KEY);
+
+    if (!json) {
+      json = JSON.stringify(readSheet_());
+      try {
+        putCache_(CACHE_KEY, json);
+      } catch (cacheErr) {
+        // Ghi cache lỗi thì vẫn trả dữ liệu bình thường
+        console.error('Không ghi được cache: ' + cacheErr.message);
+      }
+    }
+    return ContentService.createTextOutput(json)
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (SHEET_NAME) {
+    var named = ss.getSheetByName(SHEET_NAME);
+    if (!named) throw new Error('Không tìm thấy tab "' + SHEET_NAME + '"');
+    return named;
+  }
+  return ss.getSheets()[0]; // tab đầu tiên (ổn định hơn getActiveSheet trong web app)
+}
+
+function readSheet_() {
+  var sheet = getSheet_();
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  if (lastRow < 2 || lastCol < 1) return [];
+
+  var values = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+  var headers = values[0];
+
+  // Chỉ lấy vị trí các cột cần dùng
+  var wanted = [];
+  for (var j = 0; j < headers.length; j++) {
+    if (WANTED_COLUMNS.indexOf(String(headers[j]).trim()) !== -1) {
+      wanted.push({ index: j, name: String(headers[j]).trim() });
+    }
+  }
+
+  var idIndex = -1;
+  for (var w = 0; w < wanted.length; w++) {
+    if (wanted[w].name === 'ID') idIndex = wanted[w].index;
+  }
+
+  var result = [];
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+    if (idIndex !== -1 && !row[idIndex]) continue; // bỏ dòng trống không có ID
+    var obj = {};
+    for (var k = 0; k < wanted.length; k++) {
+      var cell = row[wanted[k].index];
+      // Bỏ giá trị lỗi công thức (#REF!, #N/A...) để không gửi rác xuống web
+      if (typeof cell === 'string' && cell.charAt(0) === '#' && /^#[A-Z\/0!?]+$/.test(cell)) cell = '';
+      obj[wanted[k].name] = cell;
+    }
+    result.push(obj);
+  }
+  return result;
+}
+
+// ---- Cache có chia nhỏ (vượt 100KB/key) ----
+function putCache_(key, str) {
+  var cache = CacheService.getScriptCache();
+  var parts = {}, n = Math.ceil(str.length / CHUNK_SIZE);
+  for (var i = 0; i < n; i++) parts[key + '_' + i] = str.substr(i * CHUNK_SIZE, CHUNK_SIZE);
+  parts[key + '_n'] = String(n);
+  cache.putAll(parts, CACHE_TTL);
+}
+
+function getCache_(key) {
+  var cache = CacheService.getScriptCache();
+  var n = cache.get(key + '_n');
+  if (!n) return null;
+  var keys = [];
+  for (var i = 0; i < +n; i++) keys.push(key + '_' + i);
+  var got = cache.getAll(keys);
+  var out = '';
+  for (var k = 0; k < keys.length; k++) {
+    if (got[keys[k]] == null) return null;
+    out += got[keys[k]];
+  }
+  return out;
+}
+
+// Đọc lại Sheet và ghi cache mới NGAY (khách không phải chờ đọc Sheet)
+function rebuildCache() {
+  var json = JSON.stringify(readSheet_());
+  putCache_(CACHE_KEY, json);
+}
+
+// Được gọi tự động khi bạn sửa Sheet (cần chạy setupTriggers một lần)
+function onSheetEdit() {
+  rebuildCache();
+}
+
+// ---- CHẠY HÀM NÀY MỘT LẦN để cài trigger tự động ----
+function setupTriggers() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Xóa trigger cũ của script này để không bị trùng
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    var fn = t.getHandlerFunction();
+    if (fn === 'onSheetEdit' || fn === 'rebuildCache' || fn === 'onEditClearCache') {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+
+  // 1) Sửa Sheet -> làm mới cache ngay
+  ScriptApp.newTrigger('onSheetEdit').forSpreadsheet(ss).onEdit().create();
+
+  // 2) Mỗi giờ làm mới cache một lần để luôn "ấm", khách không bao giờ gặp cache trống
+  ScriptApp.newTrigger('rebuildCache').timeBased().everyHours(1).create();
+
+  rebuildCache();
+}

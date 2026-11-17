@@ -1,3 +1,0 @@
-git add .
-git commit -m "hoan thien code linkbio"
-git push

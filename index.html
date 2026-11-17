@@ -3,29 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Thẻ tối ưu hiển thị khi share link lên mạng xã hội -->
+    <title>Phạm Vũ Quỳnh Mây | Link Bio &amp; Review</title>
+    <meta name="description" content="Tổng hợp đồ xinh tui mặc, các nàng nhập mã để tìm đồ nha!">
+
+    <!-- Thẻ tối ưu hiển thị khi share link lên mạng xã hội (og:image phải là URL đầy đủ) -->
     <meta property="og:title" content="Phạm Vũ Quỳnh Mây | Link Bio & Review">
     <meta property="og:description" content="Tổng hợp đồ xinh tui mặc, các nàng nhập mã để tìm đồ nha!">
-    <meta property="og:image" content="profile_phamvuquynhmay.png">
+    <meta property="og:image" content="https://mayphamvuquynh-linkbio.github.io/linkbio/profile_phamvuquynhmay.jpg">
     <meta property="og:type" content="website">
-    
+    <meta property="og:locale" content="vi_VN">
+
     <!-- Favicon SVG màu trắng, không có vòng tròn nền -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g transform='translate(4, 4) scale(1)'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' fill='none' stroke='%23FFFFFF' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' fill='none' stroke='%23FFFFFF' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/></g></svg>">
-    
-    <!-- Liên kết đến file CSS bên ngoài -->
+
+    <!-- Tải sớm ảnh bìa và kết nối trước tới các máy chủ sẽ dùng -->
+    <link rel="preload" as="image" href="cover.webp">
+    <link rel="preconnect" href="https://i.ibb.co">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- BẮT ĐẦU TẢI DỮ LIỆU NGAY TỪ ĐÂY: không phải đợi CSS, font, icon hay script.js tải xong.
+         products.json là file tĩnh (nhanh). script.js lấy kết quả từ window.__snapshotFetch.
+         Apps Script (chậm) chỉ được gọi khi products.json lỗi hoặc đã cũ. -->
+    <script>
+        window.SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxqYsVBHmMiiGXJDNW6JQdgBQIZi9Rl0NBmW5xOOk3yvpV-qjSdxjigxwEQpOLTIMnA/exec';
+        window.__snapshotFetch = fetch('products.json', { cache: 'no-cache' }).catch(function () { return null; });
+    </script>
+
+    <!-- CSS chính của trang (nhỏ, cần để hiển thị đúng bố cục) -->
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Font và icon tải KHÔNG chặn hiển thị: trang hiện trước, font/icon đến sau là tự thay vào -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@400;700&family=Playfair+Display:wght@700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@400;700&family=Playfair+Display:wght@700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </noscript>
 </head>
 <body>
-    <!-- Bắt buộc khung chứa chính có position: relative để nút con định vị chuẩn xác bên trong -->
-    <div class="bio-container" style="position: relative;">
+    <!-- Khung chứa chính (position: relative được khai báo trong CSS) -->
+    <div class="bio-container">
         <!-- 1. Ảnh bìa (Cover photo) -->
         <div class="cover-photo">
-            <img src="generated-images__link-in-bio__header-block__home__155e7f6a-af6e-482b-82a9-f696f2c221dc__448709b6-f2b4-4eed-a0bf-a99daf469901.webp" alt="Cover">
+            <img src="cover.webp" alt="Ảnh bìa">
         </div>
         <!-- 2. Avatar tròn -->
         <div class="avatar-wrapper">
-            <img src="profile_phamvuquynhmay.png" alt="Avatar">
+            <img src="profile_phamvuquynhmay.jpg" alt="Ảnh đại diện Phạm Vũ Quỳnh Mây" width="100" height="100">
         </div>
         <!-- 3. Tên và Bio -->
         <div class="profile-info">
@@ -34,42 +60,42 @@
         </div>
         <!-- 4. Các nút mạng xã hội -->
         <div class="social-icons">
-            <a href="https://www.instagram.com/pvq.may_/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@phamvuquynhmay" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-            <a href="https://www.facebook.com/maidaily.doxinh" target="_blank" title="Facebook"><i class="fa-brands fa-square-facebook"></i></a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mayphamvuquynhmay@gmail.com" target="_blank" title="Email"><i class="fa-regular fa-envelope"></i></a>
+            <a href="https://www.instagram.com/pvq.may_/" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="https://www.tiktok.com/@phamvuquynhmay" target="_blank" rel="noopener noreferrer" title="TikTok" aria-label="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
+            <a href="https://www.facebook.com/maidaily.doxinh" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook"><i class="fa-brands fa-square-facebook" aria-hidden="true"></i></a>
+            <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=mayphamvuquynhmay@gmail.com" target="_blank" rel="noopener noreferrer" title="Email" aria-label="Gửi email"><i class="fa-regular fa-envelope" aria-hidden="true"></i></a>
         </div>
 
         <!-- DẤU GẠCH NGANG TRẮNG NGĂN CÁCH -->
         <hr class="divider">
-        
+
         <!-- 5. Tiêu đề và Ô tìm kiếm mã sản phẩm -->
         <div class="search-section">
             <p class="search-label"><i>Đồ tui mặc bên dưới nha </i>⤵️</p>
-            <form onsubmit="event.preventDefault(); searchAndScroll();">
-                <input type="search" id="searchCodeInput" placeholder="các nàng nhập mã tìm đồ nha..." maxlength="4" enterkeyhint="search">
+            <form id="searchForm" onsubmit="event.preventDefault(); searchAndScroll();">
+                <input type="search" id="searchCodeInput" placeholder="các nàng nhập mã tìm đồ nha..." maxlength="10" enterkeyhint="search" autocomplete="off" aria-label="Nhập mã sản phẩm để tìm">
             </form>
             <!-- Dòng chữ thông báo lỗi hiện trực tiếp, không bị Messenger chặn -->
-            <div id="searchMessage" style="color: #ffffff; font-size: 15px; margin-top: 8px; text-align: center; font-family: Arima Madurai; min-height: 22px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.4);"></div>
+            <div id="searchMessage" role="status" aria-live="polite"></div>
         </div>
-        <!-- 6. Khu vực chứa danh sách sản phẩm (Sẽ được JavaScript tự động điền vào đây) -->
+        <!-- 6. Khu vực chứa danh sách sản phẩm (JavaScript tự động điền vào đây) -->
         <div id="product-list" class="product-list">
             <!-- Sản phẩm sẽ hiện ở đây -->
         </div>
-        <!-- THÊM NÚT XEM THÊM ĐỂ TỐI ƯU TỐC ĐỘ -->
-        <div id="loadMoreContainer" style="text-align: center; margin: 20px 0; display: none;">
-            <button id="loadMoreBtn" onclick="loadMoreProducts()" style="background: #ffffff; color: #2b1d19; border: none; padding: 10px 24px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-family: inherit;">
+        <!-- Nút xem thêm để tối ưu tốc độ -->
+        <div id="loadMoreContainer">
+            <button id="loadMoreBtn" type="button" onclick="loadMoreProducts()">
                 Xem thêm sản phẩm 🔻
             </button>
         </div>
 
-       <!-- Nút nổi quay lại chỉ còn icon mũi tên -->
-            <button id="backToTopBtn" onclick="scrollToSearch()" title="Quay lại tìm kiếm">
-                <i class="fa-solid fa-arrow-up"></i>
-            </button>
+        <!-- Nút nổi quay lại chỉ còn icon mũi tên -->
+        <button id="backToTopBtn" type="button" onclick="scrollToSearch()" title="Quay lại tìm kiếm" aria-label="Quay lại ô tìm kiếm">
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+        </button>
     </div>
 
     <!-- Liên kết đến file JavaScript -->
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
