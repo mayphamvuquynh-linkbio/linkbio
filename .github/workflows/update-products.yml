@@ -24,15 +24,26 @@ jobs:
         with:
           node-version: 20
 
-      - name: Lấy dữ liệu từ Google Sheet
-        run: node scripts/build-products.js
+      # Lấy dữ liệu và nén ảnh. Mã thoát 42 = có ảnh mới cần nén mà máy chưa có ffmpeg:
+      # khi đó mới cài ffmpeg rồi chạy lại (nhờ vậy phần lớn các lần chạy rất nhanh).
+      - name: Lấy dữ liệu từ Google Sheet và nén ảnh
+        run: |
+          code=0
+          node scripts/build-products.js || code=$?
+          if [ "$code" -eq 42 ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+            node scripts/build-products.js
+          elif [ "$code" -ne 0 ]; then
+            exit "$code"
+          fi
 
       - name: Commit nếu có thay đổi
         run: |
-          if [ -n "$(git status --porcelain products.json)" ]; then
+          if [ -n "$(git status --porcelain products.json img)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add products.json
+            git add -A products.json img
             git commit -m "cap nhat products.json tu Google Sheet"
             git push
           else
