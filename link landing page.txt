@@ -255,17 +255,19 @@ function statsResponse_(e) {
 
       var day = perDay[date];
       if (!day) {
-        day = perDay[date] = { date: date, views: 0, clicks: 0, sessions: {}, byProduct: {}, bySource: {} };
+        day = perDay[date] = { date: date, views: 0, clicks: 0, sessions: {}, clickSessions: {}, byProduct: {}, bySource: {} };
       }
-      var s = day.bySource[src] || (day.bySource[src] = { views: 0, clicks: 0 });
+      var s = day.bySource[src] || (day.bySource[src] = { views: 0, clicks: 0, sessions: {}, clickSessions: {} });
 
       if (type === 'view') {
         day.views++;
         s.views++;
-        if (sid) day.sessions[sid] = 1;
+        if (sid) { day.sessions[sid] = 1; s.sessions[sid] = 1; }
       } else if (type === 'click') {
         day.clicks++;
         s.clicks++;
+        // "Phiên có bấm": đếm mỗi khách 1 lần dù bấm nhiều khung. Dùng để tính tỷ lệ khách có bấm, không vượt quá 100%
+        if (sid) { day.clickSessions[sid] = 1; s.clickSessions[sid] = 1; }
         if (id) day.byProduct[id] = (day.byProduct[id] || 0) + 1;
       }
     }
@@ -273,13 +275,24 @@ function statsResponse_(e) {
 
   var out = Object.keys(perDay).sort().map(function (date) {
     var d = perDay[date];
+    var bySource = {};
+    Object.keys(d.bySource).forEach(function (src) {
+      var s = d.bySource[src];
+      bySource[src] = {
+        views: s.views,
+        clicks: s.clicks,
+        sessions: Object.keys(s.sessions).length,
+        clickSessions: Object.keys(s.clickSessions).length
+      };
+    });
     return {
       date: d.date,
       views: d.views,
       clicks: d.clicks,
       sessions: Object.keys(d.sessions).length,
+      clickSessions: Object.keys(d.clickSessions).length,
       byProduct: d.byProduct,
-      bySource: d.bySource
+      bySource: bySource
     };
   });
 
