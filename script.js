@@ -33,6 +33,13 @@ function safeUrl(value) {
     return /^https?:\/\//i.test(url) ? url : '';
 }
 
+// Ảnh sản phẩm: nhận ảnh đã nén nằm cùng trang (img/xxx.webp) hoặc link http/https gốc
+function safeImageUrl(value) {
+    const url = String(value || '').trim();
+    if (/^img\/[\w.\-]+\.webp$/i.test(url)) return url;
+    return safeUrl(url);
+}
+
 // Chuẩn hóa mã để so sánh: bỏ khoảng trắng, không phân biệt hoa/thường, "005" = "5"
 function normalizeCode(value) {
     const text = String(value == null ? '' : value).trim().toLowerCase();
@@ -50,7 +57,7 @@ function normalizeProducts(data) {
                 id: id,
                 numericId: Number(id) || 0,
                 title: String((item && item['Tên Sản Phẩm']) || '').trim(),
-                image: safeUrl(item && item['Ảnh Sản Phẩm']),
+                image: safeImageUrl(item && item['Ảnh Sản Phẩm']),
                 // Hỗ trợ cả tên cột đúng chính tả "Shopee" lẫn tên cũ "Shope"
                 link: safeUrl(item && (item['Link Shopee'] || item['Link Shope']))
             };
@@ -199,7 +206,8 @@ function createProductCard(item, index) {
     card.className = index % 2 !== 0 ? 'product-card reverse' : 'product-card';
     card.href = item.link;
     card.target = '_blank';
-    card.rel = 'noopener noreferrer sponsored';
+    // Không dùng "noreferrer" để không cắt thông tin nguồn truy cập khi sang Shopee (an toàn cho theo dõi hoa hồng)
+    card.rel = 'noopener sponsored';
     card.dataset.id = item.id;
 
     const imageBox = document.createElement('div');
@@ -355,9 +363,125 @@ function scrollToSearch() {
     }, 500);
 }
 
-// --- 8. KHỞI CHẠY KHI TRANG TẢI XONG ---
+// --- 8. DẢI NHẮC KHI MỞ TRONG TRÌNH DUYỆT CỦA TIKTOK ---
+// Trình duyệt trong TikTok bị giới hạn (không dùng chung đăng nhập Shopee, hay không mở được ứng dụng Shopee).
+// Chỉ hiện một dải nhắc nhỏ, đóng được, không thay đổi link nên không ảnh hưởng hoa hồng.
+function isTikTokBrowser(userAgent) {
+    return /musical_ly|bytedancewebview|tiktok|trill|ttwebview/i.test(String(userAgent || ''));
+}
+
+function showInAppTip() {
+    const tip = document.getElementById('inAppTip');
+    if (!tip || !isTikTokBrowser(navigator.userAgent)) return;
+
+    try {
+        if (sessionStorage.getItem('inapp_tip_closed') === '1') return;
+    } catch (e) { /* bỏ qua: không đọc được thì cứ hiện */ }
+
+    tip.hidden = false;
+
+    const closeBtn = tip.querySelector('.in-app-tip-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            tip.hidden = true;
+            try { sessionStorage.setItem('inapp_tip_closed', '1'); } catch (e) { /* bỏ qua */ }
+        });
+    }
+}
+
+// --- 9. ĐẾM LƯỢT VÀO / LƯỢT BẤM SẢN PHẨM ---
+// Gửi 1 tín hiệu nhỏ tới Apps Script (ghi vào tab "LuotBam" trong Google Sheet của bạn).
+// Không lưu IP, tên hay cookie. Mã phiên là chuỗi ngẫu nhiên chỉ tồn tại trong tab đang mở.
+// QUAN TRỌNG: chỉ "nghe" sự kiện bấm, không chặn và không đổi link nên không ảnh hưởng hoa hồng.
+function detectSource(userAgent) {
+    const ua = String(userAgent || '');
+    if (isTikTokBrowser(ua)) return 'tiktok';
+    if (/Instagram/i.test(ua)) return 'instagram';
+    if (/FBAN|FBAV|FB_IAB|FBIOS/i.test(ua)) return 'facebook';
+    if (/Zalo/i.test(ua)) return 'zalo';
+    return 'other';
+}
+
+function detectDevice(userAgent) {
+    const ua = String(userAgent || '');
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+    if (/Android/i.test(ua)) return 'android';
+    if (/Windows|Macintosh|Linux|X11/i.test(ua)) return 'desktop';
+    return 'other';
+}
+
+let memorySessionId = '';
+function getSessionId() {
+    function randomId() {
+        try {
+            const bytes = new Uint8Array(8);
+            crypto.getRandomValues(bytes);
+            return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+        } catch (e) {
+            return Math.random().toString(16).slice(2, 18).padEnd(16, '0');
+        }
+    }
+    try {
+        let sid = sessionStorage.getItem('bio_sid');
+        if (!sid) {
+            sid = randomId();
+            sessionStorage.setItem('bio_sid', sid);
+        }
+        return sid;
+    } catch (e) {
+        if (!memorySessionId) memorySessionId = randomId();
+        return memorySessionId;
+    }
+}
+
+// Tắt đếm trên máy của chính bạn: mở trang với ?notrack=1 một lần (bật lại: ?notrack=0)
+function trackingDisabled() {
+    try {
+        const param = new URLSearchParams(location.search).get('notrack');
+        if (param === '1') localStorage.setItem('bio_notrack', '1');
+        if (param === '0') localStorage.removeItem('bio_notrack');
+        if (localStorage.getItem('bio_notrack') === '1') return true;
+    } catch (e) { /* bỏ qua */ }
+    return /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+}
+
+function sendEvent(type, productId) {
+    try {
+        if (!SHEET_API_URL || trackingDisabled()) return;
+        const ua = navigator.userAgent;
+        const body = JSON.stringify({
+            type: type,
+            id: productId ? String(productId) : '',
+            src: detectSource(ua),
+            dev: detectDevice(ua),
+            sid: getSessionId()
+        });
+        // sendBeacon gửi được ngay cả khi trang đang chuyển sang Shopee; dùng text/plain để khỏi bị chặn CORS
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon(SHEET_API_URL, new Blob([body], { type: 'text/plain;charset=UTF-8' }));
+        } else {
+            fetch(SHEET_API_URL, { method: 'POST', mode: 'no-cors', body: body, keepalive: true });
+        }
+    } catch (e) { /* đếm lỗi thì bỏ qua, tuyệt đối không ảnh hưởng khách */ }
+}
+
+function setupTracking() {
+    sendEvent('view', '');
+
+    const list = document.getElementById('product-list');
+    if (list) {
+        list.addEventListener('click', (event) => {
+            const card = event.target.closest && event.target.closest('a.product-card');
+            if (card) sendEvent('click', card.dataset.id);
+        }, { passive: true });
+    }
+}
+
+// --- 10. KHỞI CHẠY KHI TRANG TẢI XONG ---
 document.addEventListener('DOMContentLoaded', () => {
     initProducts();
+    showInAppTip();
+    setupTracking();
 
     const input = document.getElementById('searchCodeInput');
     if (input) {

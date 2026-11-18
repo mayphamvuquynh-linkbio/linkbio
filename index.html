@@ -9,8 +9,10 @@
     <!-- Thẻ tối ưu hiển thị khi share link lên mạng xã hội (og:image phải là URL đầy đủ) -->
     <meta property="og:title" content="Phạm Vũ Quỳnh Mây | Link Bio & Review">
     <meta property="og:description" content="Tổng hợp đồ xinh tui mặc, các nàng nhập mã để tìm đồ nha!">
-    <meta property="og:image" content="https://mayphamvuquynh-linkbio.github.io/linkbio/profile_phamvuquynhmay.jpg">
+    <meta property="og:image" content="https://www.phamvuquynhmay.id.vn/profile_phamvuquynhmay.jpg">
+    <meta property="og:url" content="https://www.phamvuquynhmay.id.vn/">
     <meta property="og:type" content="website">
+    <link rel="canonical" href="https://www.phamvuquynhmay.id.vn/">
     <meta property="og:locale" content="vi_VN">
 
     <!-- Favicon SVG màu trắng, không có vòng tròn nền -->
@@ -45,6 +47,11 @@
 <body>
     <!-- Khung chứa chính (position: relative được khai báo trong CSS) -->
     <div class="bio-container">
+        <!-- Dải nhắc: chỉ hiện khi khách mở trang trong trình duyệt của TikTok (xem showInAppTip trong script.js) -->
+        <div id="inAppTip" class="in-app-tip" role="note" hidden>
+            <span>💡 Mua hàng mượt hơn: bấm dấu <b>⋯</b> góc phải trên, chọn <b>mở trong trình duyệt</b> nha</span>
+            <button type="button" class="in-app-tip-close" aria-label="Đóng gợi ý">✕</button>
+        </div>
         <!-- 1. Ảnh bìa (Cover photo) -->
         <div class="cover-photo">
             <img src="cover.webp" alt="Ảnh bìa">

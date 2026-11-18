@@ -34,7 +34,7 @@ function git(args) {
         cwd: ROOT,
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'pipe']
-    }).trim();
+    }).replace(/\s+$/, ''); // chỉ bỏ khoảng trắng cuối: dòng đầu của "git status" bắt đầu bằng dấu cách, không được cắt
 }
 
 function gitError(error) {
