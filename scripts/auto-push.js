@@ -82,6 +82,41 @@ function buildMessage(statusLines) {
     return 'cap nhat: ' + shown + more;
 }
 
+// Các file do máy tự sinh (GitHub Action cũng cập nhật chúng): xung đột ở đây thì lấy bản của GitHub
+const AUTO_RESOLVE = [/^products\.json$/, /^img\//];
+
+function rebaseInProgress() {
+    return fs.existsSync(path.join(ROOT, '.git', 'rebase-merge')) || fs.existsSync(path.join(ROOT, '.git', 'rebase-apply'));
+}
+
+// Trả về true nếu đã xử lý xong và rebase hoàn tất; false nếu có xung đột ở file khác hoặc không xử lý được
+function resolveGeneratedConflicts() {
+    try {
+        for (let round = 0; round < 20; round++) {
+            const conflicted = git(['diff', '--name-only', '--diff-filter=U']).split('\n').map(s => s.trim()).filter(Boolean);
+
+            if (conflicted.length > 0) {
+                if (!conflicted.every(file => AUTO_RESOLVE.some(re => re.test(file)))) return false;
+                for (const file of conflicted) {
+                    try {
+                        // Trong rebase, "--ours" chính là phía GitHub (bản đang được áp lên trên)
+                        git(['checkout', '--ours', '--', file]);
+                        git(['add', '--', file]);
+                    } catch (e) {
+                        git(['rm', '--force', '--', file]); // phía GitHub đã xóa file này
+                    }
+                }
+            }
+
+            try { git(['-c', 'core.editor=true', 'rebase', '--continue']); } catch (e) { /* có thể dừng ở commit kế tiếp */ }
+            if (!rebaseInProgress()) return true;
+        }
+        return false;
+    } catch (error) {
+        return false;
+    }
+}
+
 function syncAndPush() {
     const status = git(['status', '--porcelain']);
     if (!status) {
@@ -120,11 +155,20 @@ function syncAndPush() {
 
     if (hasUpstream) {
         try {
-            git(['pull', '--rebase']);
+            // Dùng "fetch" rồi "rebase @{u}" thay cho "pull --rebase": cách này luôn xếp commit của bạn lên trên bản mới nhất
+            // của GitHub và không dùng cơ chế đoán "fork-point" của Git (có thể bỏ sót commit trong vài tình huống hiếm).
+            git(['fetch', '--quiet']);
+            git(['rebase', '@{u}']);
         } catch (error) {
-            try { git(['rebase', '--abort']); } catch (e) { /* bỏ qua */ }
-            log('⚠️  Xung đột khi đồng bộ với GitHub, đã hủy. Commit vẫn nằm trên máy, chưa đẩy.\n' + gitError(error));
-            return;
+            // GitHub Action cũng tự cập nhật products.json và img/ nên đôi khi xung đột với bản trên máy.
+            // Hai thứ này do máy tự sinh ra, nên cứ lấy bản của GitHub. Xung đột ở file khác thì KHÔNG tự xử lý.
+            if (resolveGeneratedConflicts()) {
+                log('ℹ️  Đã tự xử lý xung đột ở products.json / img (lấy bản do GitHub Action tạo).');
+            } else {
+                try { git(['rebase', '--abort']); } catch (e) { /* bỏ qua */ }
+                log('⚠️  Xung đột khi đồng bộ với GitHub, đã hủy. Commit vẫn nằm trên máy, chưa đẩy.\n' + gitError(error));
+                return;
+            }
         }
     }
 
